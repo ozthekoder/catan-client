@@ -74,7 +74,7 @@ gulp.task('bundle', function () {
  */
 gulp.task('default', ['bundle', 'sass', 'watch-sass'], function () {
     browserSync.init({
-        server: "./app",
-        port: 3002
+        proxy: "http://localhost:8888",
+        serveStatic: ['./app']
     });
 });
