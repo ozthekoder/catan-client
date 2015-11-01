@@ -8,6 +8,12 @@ var renderer = PIXI.autoDetectRenderer(Constants.mapWidth, Constants.mapHeight);
 var map = null;
 var Game = React.createClass({
 	componentDidMount: function () {
+		var socket = io.connect();
+
+		socket.on('ping', function(data){
+			console.log('ping!');
+			socket.emit('ping');
+		});
 		this.setState({
 			width: $(window).width(),
 			height: $(window).height()

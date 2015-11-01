@@ -62,12 +62,15 @@ gulp.task('sass', function() {
 });
 
 
+
 /**
  * Gulp task alias
  */
 gulp.task('bundle', function () {
     return bundle();
 });
+
+gulp.task('build', ['bundle', 'sass']);
 
 /**
  * First bundle, then serve from the ./app directory
