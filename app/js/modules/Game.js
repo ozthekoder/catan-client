@@ -11,6 +11,7 @@ var Game = React.createClass({
 		var socket = io.connect();
 
 		socket.on('ping', function(data){
+			data = JSON.parse(data);
 			console.log(data.message);
 			socket.emit('ping', { message: 'ping!'});
 		});
