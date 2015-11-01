@@ -1,5 +1,7 @@
-var React = require('react');
-var $ = require('jquery');
+const React = require('react');
+const $ = require('jquery');
+const Game = require('./Game');
+const PIXI = require('pixi');
 
 var Home = React.createClass({
     componentDidMount: function () {
@@ -7,7 +9,8 @@ var Home = React.createClass({
     },
     render: function () {
         return ( < div className = "container page" >
-            < /div>);
+                <Game />
+            </div>);
     }
 })
 

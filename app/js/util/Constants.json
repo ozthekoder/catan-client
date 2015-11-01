@@ -1,0 +1,46 @@
+{
+  "tiles": {
+    "clay": {
+      "url": "data/images/clayHex.png",
+      "count": 3
+    },
+    "desert": {
+      "url": "data/images/desertHex.png",
+      "count": 1
+    },
+    "ore": {
+      "url": "data/images/oreHex.png",
+      "count": 3
+    },
+    "sheep": {
+      "url": "data/images/sheepHex.png",
+      "count": 4
+    },
+    "water": {
+      "url": "data/images/waterHex.png",
+      "count": 62
+    },
+    "wheat": {
+      "url": "data/images/wheatHex.png",
+      "count": 4
+    },
+    "wood": {
+      "url": "data/images/woodHex.png",
+      "count": 4
+    }
+  },
+  "mapTemplate": [
+    ["water", "water", "water", "water", "water", "water", "water"],
+
+    ["water", "water",       "clay", "wood", "ore",            "water", "water"],
+    ["water",           "wood", "sheep", "wheat", "sheep",               "water", "water"],
+    ["water",       "clay", "ore", "desert", "wood", "wheat",           "water"],
+    ["water",           "wood", "wheat", "sheep", "ore",             "water", "water"],
+    ["water", "water",      "sheep", "clay", "wheat",                 "water", "water"],
+
+    ["water", "water", "water", "water", "water", "water", "water"]
+  ],
+  "mapWidth": 655,
+  "mapHeight": 625
+
+}

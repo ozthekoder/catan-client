@@ -318,7 +318,8 @@ select {
   text-transform: none; }
 
 button,
-html input[type="button"], input[type="reset"],
+html input[type="button"],
+input[type="reset"],
 input[type="submit"] {
   -webkit-appearance: button;
   cursor: pointer; }
@@ -388,6 +389,21 @@ html, body, .container {
   width: 100%;
   height: 100%;
   overflow: hidden; }
+
+.rightPanel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 625px; }
+
+.button {
+  padding: 5px;
+  background: lightblue;
+  border-radius: 3px;
+  cursor: pointer;
+  margin: 10px;
+  display: inline-block; }
 
 @font-face {
   font-family: "DarbySans-Light";
