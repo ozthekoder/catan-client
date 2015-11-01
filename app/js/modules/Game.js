@@ -11,8 +11,8 @@ var Game = React.createClass({
 		var socket = io.connect();
 
 		socket.on('ping', function(data){
-			console.log('ping!');
-			socket.emit('ping');
+			console.log(data.message);
+			socket.emit('ping', { message: 'ping!'});
 		});
 		this.setState({
 			width: $(window).width(),
