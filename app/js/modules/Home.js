@@ -1,7 +1,6 @@
 const React = require('react');
 const $ = require('jquery');
-const Game = require('./Game');
-const PIXI = require('pixi');
+const Editor = require('./Editor');
 
 var Home = React.createClass({
     componentDidMount: function () {
@@ -9,7 +8,7 @@ var Home = React.createClass({
     },
     render: function () {
         return ( < div className = "container page" >
-                <Game />
+                <Editor />
             </div>);
     }
 })

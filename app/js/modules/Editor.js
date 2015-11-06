@@ -1,20 +1,17 @@
 const React = require('react');
 const $ = require('jquery');
 const _ = require('lodash');
-const PIXI = require('pixi');
+const PIXI = require('pixi.js');
+const TileNode = require('../objects/TileNode');
+const TileStore = require('../objects/TileStore');
 const Constants = require('../util/Constants.json');
+
 var stage = new PIXI.Stage("0x000000");
 var renderer = PIXI.autoDetectRenderer(Constants.mapWidth, Constants.mapHeight);
+var tileStore = new TileStore();
 var map = null;
-var Game = React.createClass({
+var Editor = React.createClass({
 	componentDidMount: function () {
-		var socket = io.connect();
-
-		socket.on('ping', function(data){
-			data = JSON.parse(data);
-			console.log(data.message);
-			socket.emit('ping', { message: 'ping!'});
-		});
 		this.setState({
 			width: $(window).width(),
 			height: $(window).height()
@@ -29,7 +26,7 @@ var Game = React.createClass({
 	},
 
 	renderGameMap: function(map){
-		let gameMap = new PIXI.DisplayObjectContainer();;
+		let gameMap = new PIXI.Container();;
 		gameMap.position.x = 0;
 		gameMap.position.y = 0;
 
@@ -37,9 +34,71 @@ var Game = React.createClass({
 			let row = map[i];
 			for(let j=0; j< row.length; j++) {
 				let type = row[j];
-				let sprite = this.createMapTileSprite(type);
-				sprite.position = this.getLocationPointForTile(i,j);
-				gameMap.addChild(sprite);
+				let tile =this.createTileNode(type)
+
+				let onMouseDown = (function(e){
+					this.dragging = true;
+					this.originalCoordinates = {
+						x: this.sprite.x,
+						y: this.sprite.y,
+						z: gameMap.getChildIndex(this.sprite)
+					};
+					gameMap.swapChildren(gameMap.getChildAt(gameMap.children.length-1), this.sprite);
+
+				}).bind(tile);
+
+				let onMouseMove = (function(e){
+					if(this.dragging)
+					{
+						this.updatePositionCoordinates(e.data.global.x, e.data.global.y);
+					}
+
+				}).bind(tile);
+
+				let onMouseUp = (function(e){
+					if(this.dragging) {
+						let swapped = false;
+						let tiles = gameMap.children;
+						for(let i=0; i< tiles.length; i++) {
+
+
+							if(Math.abs(tiles[i].x - this.sprite.x) < 30 &&
+								Math.abs(tiles[i].y - this.sprite.y) < 30 &&
+							    this._id !== tiles[i].tileId) {
+								let collided = tiles[i];
+								console.log(`tile x, y: ${collided.x}, ${collided.y} id: ${collided.tileId}`);
+								console.log(`this x, y: ${this.originalCoordinates.x}, ${this.originalCoordinates.y} id: ${this._id}`);
+								gameMap.swapChildren(gameMap.getChildAt(this.originalCoordinates.z), this.sprite);
+								gameMap.swapChildren(collided, this.sprite);
+								this.updatePositionCoordinates(collided.x, collided.y);
+								console.log(this);
+								collided.x = this.originalCoordinates.x;
+								collided.y = this.originalCoordinates.y;
+								swapped = true;
+
+								console.log(`tile x, y: ${collided.x}, ${collided.y} id: ${collided.tileId}`);
+								console.log(`this x, y: ${this.sprite.x}, ${this.sprite.y} id: ${this._id}`);
+							}
+
+						}
+
+						if(!swapped) {
+							this.updatePositionCoordinates(this.originalCoordinates.x, this.originalCoordinates.y);
+							gameMap.swapChildren(gameMap.getChildAt(this.originalCoordinates.z), this.sprite);
+						}
+
+						this.originalCoordinates = null;
+						this.dragging = false;
+					}
+
+				}).bind(tile);
+
+				tile.on('mousedown', onMouseDown);
+				tile.on('mousemove', onMouseMove);
+				tile.on('mouseup', onMouseUp);
+				tile.on('mouseupoutside', onMouseUp);
+				tile.updatePositionPoint(this.getLocationPointForTile(i,j));
+				gameMap.addChild(tile.sprite);
 			}
 		}
 
@@ -60,7 +119,7 @@ var Game = React.createClass({
 
 		});
 
-		let l = temp.length
+		let l = temp.length;
 		for(let i=0; i < l; i++) {
 			let rand = Math.random() * temp.length;
 			tiles.push(temp.splice(rand,1)[0]);
@@ -102,11 +161,8 @@ var Game = React.createClass({
 		return new PIXI.Point(x, y);
 	},
 
-	createMapTileSprite: function(type){
-		let sprite = this.createSprite(this.state.textures[type]);
-		sprite.scale.x = 0.5;
-		sprite.scale.y = 0.5;
-		return sprite;
+	createTileNode: function(type){
+		return tileStore.createNewNode(type, this.state.textures[type]);
 	},
 
 	createSprite: function(texture){
@@ -155,5 +211,5 @@ var Game = React.createClass({
 	}
 })
 
-module.exports = Game;
+module.exports = Editor;
 
