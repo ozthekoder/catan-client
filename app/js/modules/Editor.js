@@ -60,26 +60,17 @@ var Editor = React.createClass({
 						let swapped = false;
 						let tiles = gameMap.children;
 						for(let i=0; i< tiles.length; i++) {
-
-
 							if(Math.abs(tiles[i].x - this.sprite.x) < 30 &&
 								Math.abs(tiles[i].y - this.sprite.y) < 30 &&
 							    this._id !== tiles[i].tileId) {
 								let collided = tiles[i];
-								console.log(`tile x, y: ${collided.x}, ${collided.y} id: ${collided.tileId}`);
-								console.log(`this x, y: ${this.originalCoordinates.x}, ${this.originalCoordinates.y} id: ${this._id}`);
 								gameMap.swapChildren(gameMap.getChildAt(this.originalCoordinates.z), this.sprite);
 								gameMap.swapChildren(collided, this.sprite);
 								this.updatePositionCoordinates(collided.x, collided.y);
-								console.log(this);
 								collided.x = this.originalCoordinates.x;
 								collided.y = this.originalCoordinates.y;
 								swapped = true;
-
-								console.log(`tile x, y: ${collided.x}, ${collided.y} id: ${collided.tileId}`);
-								console.log(`this x, y: ${this.sprite.x}, ${this.sprite.y} id: ${this._id}`);
 							}
-
 						}
 
 						if(!swapped) {

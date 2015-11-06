@@ -99,21 +99,14 @@ var Editor = React.createClass({
 						var swapped = false;
 						var tiles = gameMap.children;
 						for (var _i = 0; _i < tiles.length; _i++) {
-
 							if (Math.abs(tiles[_i].x - this.sprite.x) < 30 && Math.abs(tiles[_i].y - this.sprite.y) < 30 && this._id !== tiles[_i].tileId) {
 								var collided = tiles[_i];
-								console.log('tile x, y: ' + collided.x + ', ' + collided.y + ' id: ' + collided.tileId);
-								console.log('this x, y: ' + this.originalCoordinates.x + ', ' + this.originalCoordinates.y + ' id: ' + this._id);
 								gameMap.swapChildren(gameMap.getChildAt(this.originalCoordinates.z), this.sprite);
 								gameMap.swapChildren(collided, this.sprite);
 								this.updatePositionCoordinates(collided.x, collided.y);
-								console.log(this);
 								collided.x = this.originalCoordinates.x;
 								collided.y = this.originalCoordinates.y;
 								swapped = true;
-
-								console.log('tile x, y: ' + collided.x + ', ' + collided.y + ' id: ' + collided.tileId);
-								console.log('this x, y: ' + this.sprite.x + ', ' + this.sprite.y + ' id: ' + this._id);
 							}
 						}
 
