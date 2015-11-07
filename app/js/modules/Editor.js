@@ -11,83 +11,44 @@ var renderer = PIXI.autoDetectRenderer(Constants.mapWidth, Constants.mapHeight);
 var tileStore = new TileStore();
 var map = null;
 var Editor = React.createClass({
+
 	componentDidMount: function () {
 		this.setState({
 			width: $(window).width(),
 			height: $(window).height()
 		});
 
-		this.loadTextures(Constants.tiles);
-		this.generateNewMap(true)
-
+		this.loadTextures(Constants.textures);
+		this.generateNewMap(true);
 		this.getDOMNode().appendChild(renderer.view);
 
 		requestAnimFrame( this.animate );
 	},
 
 	renderGameMap: function(map){
-		let gameMap = new PIXI.Container();;
+		let gameMap = new PIXI.Container();
 		gameMap.position.x = 0;
 		gameMap.position.y = 0;
-
 		for(let i=0; i< map.length; i++) {
 			let row = map[i];
 			for(let j=0; j< row.length; j++) {
 				let type = row[j];
-				let tile =this.createTileNode(type)
+				let tile =this.createTileNode(type);
+				tile.draggable = true;
+				let mapping;
+				if(Constants.number_location_mappings[i])
+					mapping = Constants.number_location_mappings[i][j];
 
-				let onMouseDown = (function(e){
-					this.dragging = true;
-					this.originalCoordinates = {
-						x: this.sprite.x,
-						y: this.sprite.y,
-						z: gameMap.getChildIndex(this.sprite)
-					};
-					gameMap.swapChildren(gameMap.getChildAt(gameMap.children.length-1), this.sprite);
+				if(mapping){
+					let icon = new PIXI.Sprite(this.state.textures[mapping]);
+					tile.setNumberIcon(icon);
+				} else if( type === "desert") {
+					let thief = new PIXI.Sprite(this.state.textures.thief);
+					tile.addThief(thief);
+				}
 
-				}).bind(tile);
+				tile.bindEvents();
 
-				let onMouseMove = (function(e){
-					if(this.dragging)
-					{
-						this.updatePositionCoordinates(e.data.global.x, e.data.global.y);
-					}
-
-				}).bind(tile);
-
-				let onMouseUp = (function(e){
-					if(this.dragging) {
-						let swapped = false;
-						let tiles = gameMap.children;
-						for(let i=0; i< tiles.length; i++) {
-							if(Math.abs(tiles[i].x - this.sprite.x) < 30 &&
-								Math.abs(tiles[i].y - this.sprite.y) < 30 &&
-							    this._id !== tiles[i].tileId) {
-								let collided = tiles[i];
-								gameMap.swapChildren(gameMap.getChildAt(this.originalCoordinates.z), this.sprite);
-								gameMap.swapChildren(collided, this.sprite);
-								this.updatePositionCoordinates(collided.x, collided.y);
-								collided.x = this.originalCoordinates.x;
-								collided.y = this.originalCoordinates.y;
-								swapped = true;
-							}
-						}
-
-						if(!swapped) {
-							this.updatePositionCoordinates(this.originalCoordinates.x, this.originalCoordinates.y);
-							gameMap.swapChildren(gameMap.getChildAt(this.originalCoordinates.z), this.sprite);
-						}
-
-						this.originalCoordinates = null;
-						this.dragging = false;
-					}
-
-				}).bind(tile);
-
-				tile.on('mousedown', onMouseDown);
-				tile.on('mousemove', onMouseMove);
-				tile.on('mouseup', onMouseUp);
-				tile.on('mouseupoutside', onMouseUp);
 				tile.updatePositionPoint(this.getLocationPointForTile(i,j));
 				gameMap.addChild(tile.sprite);
 			}
@@ -97,13 +58,13 @@ var Editor = React.createClass({
 	},
 
 	generateNewMap: function(desertInTheMiddle){
-		let types = Constants.tiles;
+		let types = Constants.types;
 		let template = Constants.mapTemplate;
 		let temp= [];
 		let tiles = [];
-		_.each(types, (tile, name, list)=>{
+		_.each(types, (count, name, list)=>{
 			if(name !== "water") {
-				for(let i=0; i < tile.count; i++) {
+				for(let i=0; i < count; i++) {
 					temp.push(name);
 				}
 			}
@@ -200,7 +161,7 @@ var Editor = React.createClass({
 			</div>
 		);
 	}
-})
+});
 
 module.exports = Editor;
 

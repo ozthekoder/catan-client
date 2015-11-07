@@ -59,71 +59,36 @@ var Editor = React.createClass({
 			height: $(window).height()
 		});
 
-		this.loadTextures(Constants.tiles);
+		this.loadTextures(Constants.textures);
 		this.generateNewMap(true);
-
 		this.getDOMNode().appendChild(renderer.view);
 
 		requestAnimFrame(this.animate);
 	},
 
 	renderGameMap: function renderGameMap(map) {
-		var gameMap = new PIXI.Container();;
+		var gameMap = new PIXI.Container();
 		gameMap.position.x = 0;
 		gameMap.position.y = 0;
-
 		for (var i = 0; i < map.length; i++) {
 			var row = map[i];
 			for (var j = 0; j < row.length; j++) {
 				var type = row[j];
 				var tile = this.createTileNode(type);
+				tile.draggable = true;
+				var mapping = undefined;
+				if (Constants.number_location_mappings[i]) mapping = Constants.number_location_mappings[i][j];
 
-				var onMouseDown = (function (e) {
-					this.dragging = true;
-					this.originalCoordinates = {
-						x: this.sprite.x,
-						y: this.sprite.y,
-						z: gameMap.getChildIndex(this.sprite)
-					};
-					gameMap.swapChildren(gameMap.getChildAt(gameMap.children.length - 1), this.sprite);
-				}).bind(tile);
+				if (mapping) {
+					var icon = new PIXI.Sprite(this.state.textures[mapping]);
+					tile.setNumberIcon(icon);
+				} else if (type === "desert") {
+					var thief = new PIXI.Sprite(this.state.textures.thief);
+					tile.addThief(thief);
+				}
 
-				var onMouseMove = (function (e) {
-					if (this.dragging) {
-						this.updatePositionCoordinates(e.data.global.x, e.data.global.y);
-					}
-				}).bind(tile);
+				tile.bindEvents();
 
-				var onMouseUp = (function (e) {
-					if (this.dragging) {
-						var swapped = false;
-						var tiles = gameMap.children;
-						for (var _i = 0; _i < tiles.length; _i++) {
-							if (Math.abs(tiles[_i].x - this.sprite.x) < 30 && Math.abs(tiles[_i].y - this.sprite.y) < 30 && this._id !== tiles[_i].tileId) {
-								var collided = tiles[_i];
-								gameMap.swapChildren(gameMap.getChildAt(this.originalCoordinates.z), this.sprite);
-								gameMap.swapChildren(collided, this.sprite);
-								this.updatePositionCoordinates(collided.x, collided.y);
-								collided.x = this.originalCoordinates.x;
-								collided.y = this.originalCoordinates.y;
-								swapped = true;
-							}
-						}
-
-						if (!swapped) {
-							this.updatePositionCoordinates(this.originalCoordinates.x, this.originalCoordinates.y);
-							gameMap.swapChildren(gameMap.getChildAt(this.originalCoordinates.z), this.sprite);
-						}
-
-						this.originalCoordinates = null;
-						this.dragging = false;
-					}
-				}).bind(tile);
-
-				tile.on('mousedown', onMouseDown);
-				tile.on('mousemove', onMouseMove);
-				tile.on('mouseup', onMouseUp);
-				tile.on('mouseupoutside', onMouseUp);
 				tile.updatePositionPoint(this.getLocationPointForTile(i, j));
 				gameMap.addChild(tile.sprite);
 			}
@@ -133,13 +98,13 @@ var Editor = React.createClass({
 	},
 
 	generateNewMap: function generateNewMap(desertInTheMiddle) {
-		var types = Constants.tiles;
+		var types = Constants.types;
 		var template = Constants.mapTemplate;
 		var temp = [];
 		var tiles = [];
-		_.each(types, function (tile, name, list) {
+		_.each(types, function (count, name, list) {
 			if (name !== "water") {
-				for (var i = 0; i < tile.count; i++) {
+				for (var i = 0; i < count; i++) {
 					temp.push(name);
 				}
 			}
@@ -309,11 +274,13 @@ var Store = (function () {
 	}, {
 		key: 'set',
 		value: function set(entity) {
+			entity.store = this;
 			this.entities[entity._id] = entity;
 		}
 	}, {
 		key: 'add',
 		value: function add(entity) {
+			entity.store = this;
 			return this.entities[entity._id] = entity;
 		}
 	}, {
@@ -346,6 +313,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 var _ = require('lodash');
 var Entity = require('./Entity');
+var Constants = require('../util/Constants.json');
 
 var TileNode = (function (_Entity) {
 	_inherits(TileNode, _Entity);
@@ -376,6 +344,29 @@ var TileNode = (function (_Entity) {
 			this.sprite.y = y;
 		}
 	}, {
+		key: 'setNumberIcon',
+		value: function setNumberIcon(icon) {
+			icon.scale.x = 0.5;
+			icon.scale.y = 0.5;
+			icon.anchor.x = 0.5;
+			icon.anchor.y = 0.5;
+			this.sprite.addChildAt(icon, 0);
+		}
+	}, {
+		key: 'addThief',
+		value: function addThief(thief) {
+			thief.scale.x = 0.5;
+			thief.scale.y = 0.5;
+			thief.anchor.x = 0.5;
+			thief.anchor.y = 0.5;
+			this.sprite.addChild(thief);
+		}
+	}, {
+		key: 'removeThief',
+		value: function removeThief() {
+			this.sprite.removeChildAt(this.sprite.children.length - 1);
+		}
+	}, {
 		key: 'on',
 		value: function on(event, callback) {
 			this.sprite.on(event, callback);
@@ -385,6 +376,79 @@ var TileNode = (function (_Entity) {
 		value: function off(event) {
 			this.sprite.off(event);
 		}
+	}, {
+		key: 'bindEvents',
+		value: function bindEvents() {
+			this.on('mousedown', this.onMouseDown.bind(this));
+			this.on('mousemove', this.onMouseMove.bind(this));
+			this.on('mouseup', this.onMouseUp.bind(this));
+			this.on('mouseupoutside', this.onMouseUp.bind(this));
+		}
+	}, {
+		key: 'unbindEvents',
+		value: function unbindEvents() {
+			this.off('mousedown');
+			this.off('mousemove');
+			this.off('mouseup');
+			this.off('mouseupoutside');
+		}
+	}, {
+		key: 'onMouseDown',
+		value: function onMouseDown(e) {
+			if (this.draggable) {
+				var _parent = this.sprite.parent;
+				this.dragging = true;
+				this.originalCoordinates = {
+					x: this.sprite.x,
+					y: this.sprite.y,
+					z: _parent.getChildIndex(this.sprite)
+				};
+				_parent.swapChildren(_parent.getChildAt(_parent.children.length - 1), this.sprite);
+			} else {}
+		}
+	}, {
+		key: 'onMouseMove',
+		value: function onMouseMove(e) {
+			if (this.draggable) {
+				if (this.dragging) {
+					this.updatePositionCoordinates(e.data.global.x, e.data.global.y);
+				}
+			} else {}
+		}
+	}, {
+		key: 'onMouseUp',
+		value: function onMouseUp(e) {
+			if (this.draggable) {
+				var _parent2 = this.sprite.parent;
+				if (this.dragging) {
+					var swapped = false;
+					var tiles = _parent2.children;
+					for (var i = 0; i < tiles.length; i++) {
+						if (Math.abs(tiles[i].x - this.sprite.x) < 30 && Math.abs(tiles[i].y - this.sprite.y) < 30 && this._id !== tiles[i].tileId) {
+							var collided = tiles[i];
+							_parent2.swapChildren(_parent2.getChildAt(this.originalCoordinates.z), this.sprite);
+							_parent2.swapChildren(collided, this.sprite);
+							this.updatePositionCoordinates(collided.x, collided.y);
+							collided.x = this.originalCoordinates.x;
+							collided.y = this.originalCoordinates.y;
+							var icon1 = this.sprite.removeChildAt(0);
+							var icon2 = collided.removeChildAt(0);
+							this.setNumberIcon(icon2);
+							this.store.get(collided.tileId).setNumberIcon(icon1);
+							swapped = true;
+						}
+					}
+
+					if (!swapped) {
+						this.updatePositionCoordinates(this.originalCoordinates.x, this.originalCoordinates.y);
+						_parent2.swapChildren(_parent2.getChildAt(this.originalCoordinates.z), this.sprite);
+					}
+
+					this.originalCoordinates = null;
+					this.dragging = false;
+				}
+			} else {}
+		}
 	}]);
 
 	return TileNode;
@@ -392,7 +456,7 @@ var TileNode = (function (_Entity) {
 
 module.exports = TileNode;
 
-},{"./Entity":4,"lodash":18}],7:[function(require,module,exports){
+},{"../util/Constants.json":8,"./Entity":4,"lodash":18}],7:[function(require,module,exports){
 "use strict";
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -439,34 +503,72 @@ module.exports = TileStore;
 
 },{"../util/Constants.json":8,"./Store":5,"./TileNode":6,"lodash":18,"pixi.js":123}],8:[function(require,module,exports){
 module.exports={
-  "tiles": {
+  "types": {
+    "clay": 3,
+    "desert": 1,
+    "ore": 3,
+    "sheep": 4,
+    "water": 62,
+    "wheat": 4,
+    "wood": 4
+  },
+  "textures": {
     "clay": {
-      "url": "data/images/clayHex.png",
-      "count": 3
+      "url": "data/images/clayHex.png"
     },
     "desert": {
-      "url": "data/images/desertHex.png",
-      "count": 1
+      "url": "data/images/desertHex.png"
     },
     "ore": {
-      "url": "data/images/oreHex.png",
-      "count": 3
+      "url": "data/images/oreHex.png"
     },
     "sheep": {
-      "url": "data/images/sheepHex.png",
-      "count": 4
+      "url": "data/images/sheepHex.png"
     },
     "water": {
-      "url": "data/images/waterHex.png",
-      "count": 62
+      "url": "data/images/waterHex.png"
     },
     "wheat": {
-      "url": "data/images/wheatHex.png",
-      "count": 4
+      "url": "data/images/wheatHex.png"
     },
     "wood": {
-      "url": "data/images/woodHex.png",
-      "count": 4
+      "url": "data/images/woodHex.png"
+    },
+    "triangle": {
+      "url": "data/images/triangle.png"
+    },
+    "thief": {
+      "url": "data/images/thief.png"
+    },
+    "circle_2": {
+      "url": "data/images/tile_two.png"
+    },
+    "circle_3": {
+      "url": "data/images/tile_three.png"
+    },
+    "circle_4": {
+      "url": "data/images/tile_four.png"
+    },
+    "circle_5": {
+      "url": "data/images/tile_five.png"
+    },
+    "circle_6": {
+      "url": "data/images/tile_six.png"
+    },
+    "circle_8": {
+      "url": "data/images/tile_eight.png"
+    },
+    "circle_9": {
+      "url": "data/images/tile_nine.png"
+    },
+    "circle_10": {
+      "url": "data/images/tile_ten.png"
+    },
+    "circle_11": {
+      "url": "data/images/tile_eleven.png"
+    },
+    "circle_12": {
+      "url": "data/images/tile_twelve.png"
     }
   },
   "mapTemplate": [
@@ -481,7 +583,37 @@ module.exports={
     ["water", "water", "water", "water", "water", "water", "water"]
   ],
   "mapWidth": 655,
-  "mapHeight": 625
+  "mapHeight": 625,
+  "number_location_mappings": {
+    "1": {
+      "2": "circle_5",
+      "3": "circle_2",
+      "4": "circle_6"
+    },
+    "2": {
+      "1": "circle_10",
+      "2": "circle_9",
+      "3": "circle_4",
+      "4": "circle_3"
+    },
+    "3": {
+      "1": "circle_8",
+      "2": "circle_5",
+      "4": "circle_5",
+      "5": "circle_8"
+    },
+    "4": {
+      "1": "circle_4",
+      "2": "circle_11",
+      "3": "circle_6",
+      "4": "circle_10"
+    },
+    "5": {
+      "2": "circle_11",
+      "3": "circle_12",
+      "4": "circle_9"
+    }
+  }
 
 }
 },{}],9:[function(require,module,exports){

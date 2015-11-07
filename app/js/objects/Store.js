@@ -13,10 +13,12 @@ class Store {
 	}
 
 	set(entity) {
+		entity.store = this;
 		this.entities[entity._id] = entity;
 	}
 
 	add(entity) {
+		entity.store = this;
 		return this.entities[entity._id] = entity;
 	}
 
