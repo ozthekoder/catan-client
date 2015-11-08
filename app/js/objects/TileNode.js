@@ -43,6 +43,17 @@ class TileNode extends Entity {
 		this.sprite.addChild(thief)
 	}
 
+	addPort(port) {
+		//port.scale.x = 0.5;
+		//port.scale.y = 0.5;
+		port.rotation = -0.57;
+		port.anchor.x = 0.5;
+		port.anchor.y = 0.5;
+		port.x = -72;
+		port.y = -122;
+		this.sprite.addChild(port)
+	}
+
 	removeThief() {
 		this.sprite.removeChildAt(this.sprite.children.length-1);
 	}

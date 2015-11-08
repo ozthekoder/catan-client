@@ -70,6 +70,7 @@ var Editor = React.createClass({
 		var gameMap = new PIXI.Container();
 		gameMap.position.x = 0;
 		gameMap.position.y = 0;
+		var foo = true;
 		for (var i = 0; i < map.length; i++) {
 			var row = map[i];
 			for (var j = 0; j < row.length; j++) {
@@ -82,6 +83,10 @@ var Editor = React.createClass({
 				if (mapping) {
 					var icon = new PIXI.Sprite(this.state.textures[mapping]);
 					tile.setNumberIcon(icon);
+					if (foo) {
+						foo = false;
+						tile.addPort(new PIXI.Sprite(this.state.textures["triangle"]));
+					}
 				} else if (type === "desert") {
 					var thief = new PIXI.Sprite(this.state.textures.thief);
 					tile.addThief(thief);
@@ -360,6 +365,18 @@ var TileNode = (function (_Entity) {
 			thief.anchor.x = 0.5;
 			thief.anchor.y = 0.5;
 			this.sprite.addChild(thief);
+		}
+	}, {
+		key: 'addPort',
+		value: function addPort(port) {
+			//port.scale.x = 0.5;
+			//port.scale.y = 0.5;
+			port.rotation = -0.57;
+			port.anchor.x = 0.5;
+			port.anchor.y = 0.5;
+			port.x = -72;
+			port.y = -122;
+			this.sprite.addChild(port);
 		}
 	}, {
 		key: 'removeThief',

@@ -29,6 +29,7 @@ var Editor = React.createClass({
 		let gameMap = new PIXI.Container();
 		gameMap.position.x = 0;
 		gameMap.position.y = 0;
+		let foo = true;
 		for(let i=0; i< map.length; i++) {
 			let row = map[i];
 			for(let j=0; j< row.length; j++) {
@@ -42,6 +43,10 @@ var Editor = React.createClass({
 				if(mapping){
 					let icon = new PIXI.Sprite(this.state.textures[mapping]);
 					tile.setNumberIcon(icon);
+					if(foo) {
+						foo = false;
+						tile.addPort(new PIXI.Sprite(this.state.textures["triangle"]));
+					}
 				} else if( type === "desert") {
 					let thief = new PIXI.Sprite(this.state.textures.thief);
 					tile.addThief(thief);
