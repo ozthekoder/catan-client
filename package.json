@@ -1,7 +1,7 @@
 {
-  "name": "gulp.browserify",
-  "version": "1.0.0",
-  "description": "Browserify, Babelify + Watchify + Sourcemaps Example",
+  "name": "catan-client",
+  "version": "0.1.0",
+  "description": "Settlers of Catan Client Implementation",
   "main": "gulpfile.js",
   "scripts": {
     "start": "gulp"
@@ -24,8 +24,25 @@
     "es6-promise": "^2.3.0",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
-    "pixi": "https://github.com/pixijs/pixi.js.git",
+    "pixi": "git+https://github.com/pixijs/pixi.js.git",
     "react": "^0.13.3",
     "react-router": "^0.13.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ozthekoder/catan-client.git"
+  },
+  "keywords": [
+    "settlers",
+    "catan",
+    "game",
+    "strategy",
+    "board",
+    "client"
+  ],
+  "author": "Osman Ozdemir <oozdemir2704@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/ozthekoder/catan-client/issues"
+  },
+  "homepage": "https://github.com/ozthekoder/catan-client#readme"
 }
