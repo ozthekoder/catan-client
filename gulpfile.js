@@ -26,7 +26,7 @@ bundler.transform(babelify.configure({
 }));
 
 // On updates recompile
-bundler.on('update', bundle);
+//bundler.on('update', bundle);
 
 function bundle() {
 
@@ -40,8 +40,7 @@ function bundle() {
         })
         .pipe(exorcist('app/js/dist/bundle.js.map'))
         .pipe(source('bundle.js'))
-        .pipe(gulp.dest('./app/js/dist'))
-        .pipe(browserSync.stream({once: true}));
+        .pipe(gulp.dest('./app/js/dist'));
 }
 
 //Watching scss file changes
@@ -57,8 +56,7 @@ gulp.task('sass', function() {
             browsers: ['last 2 versions'],
             cascade: false
         }))
-        .pipe(gulp.dest(src.css))
-        .pipe(reload({stream: true}));
+        .pipe(gulp.dest(src.css));
 });
 
 
@@ -70,7 +68,9 @@ gulp.task('bundle', function () {
     return bundle();
 });
 
-gulp.task('build', ['bundle', 'sass']);
+gulp.task('build', ['bundle', 'sass'], function(err){
+    process.exit(err ? 1 : 0);
+});
 
 /**
  * First bundle, then serve from the ./app directory
