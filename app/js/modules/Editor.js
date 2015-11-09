@@ -159,11 +159,14 @@ var Editor = React.createClass({
 
 	render: function () {
 		return (
+		< div className = "container page" >
 			< div className="container">
 				<div className="rightPanel">
 					<a className="button" onClick={this.generateNewMap.bind(this, true)}>Generate New Map</a>
 				</div>
 			</div>
+		</div>
+
 		);
 	}
 });

@@ -3,6 +3,8 @@ var Router = require('react-router');
 var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 var Home = require('./modules/Home');
+var CreateUser = require('./modules/CreateUser');
+var Editor = require('./modules/Editor');
 
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       ||
@@ -12,6 +14,8 @@ window.requestAnimFrame = (function(){
         window.setTimeout(callback, 1000 / 60);
       };
 })();
+
+window.socket = io();
 
 var App = React.createClass({
   render: function(){
@@ -26,6 +30,8 @@ var App = React.createClass({
 var routes = (
   <Route handler={App} >
     <Route path="/" handler={Home} />
+      <Route path="/create-user" handler={CreateUser} />
+      <Route path="/editor" handler={Editor} />
   </Route>
 );
 
