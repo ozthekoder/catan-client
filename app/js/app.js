@@ -1,10 +1,13 @@
-var React = require('react');
-var Router = require('react-router');
-var Route = Router.Route;
-var RouteHandler = Router.RouteHandler;
-var Home = require('./modules/Home');
-var CreateUser = require('./modules/CreateUser');
-var Editor = require('./modules/Editor');
+const React = require('react');
+const Router = require('react-router');
+const Route = Router.Route;
+const RouteHandler = Router.RouteHandler;
+const Home = require('./modules/Home');
+const CreateUser = require('./modules/CreateUser');
+const Editor = require('./modules/Editor');
+const SessionHandler = require('./util/SessionHandler');
+var sessionHandler = new SessionHandler();
+
 
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       ||
@@ -14,8 +17,6 @@ window.requestAnimFrame = (function(){
         window.setTimeout(callback, 1000 / 60);
       };
 })();
-
-window.socket = io();
 
 var App = React.createClass({
   render: function(){
@@ -27,11 +28,35 @@ var App = React.createClass({
   }
 });
 
+let HomeWrapper = React.createClass({
+    render() {
+        return (
+            <Home sessionHandler={sessionHandler} />
+        )
+    }
+});
+
+let EditorWrapper = React.createClass({
+    render() {
+        return (
+            <Editor sessionHandler={sessionHandler} />
+        )
+    }
+});
+
+let CreateUserWrapper = React.createClass({
+    render() {
+        return (
+            <CreateUser sessionHandler={sessionHandler} />
+        )
+    }
+});
+
 var routes = (
   <Route handler={App} >
-    <Route path="/" handler={Home} />
-      <Route path="/create-user" handler={CreateUser} />
-      <Route path="/editor" handler={Editor} />
+    <Route path="/" handler={HomeWrapper} />
+      <Route path="/create-user" handler={CreateUserWrapper} />
+      <Route path="/editor" handler={EditorWrapper} />
   </Route>
 );
 

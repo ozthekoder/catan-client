@@ -4,7 +4,7 @@ const _ = require('lodash');
 const PIXI = require('pixi.js');
 const TileNode = require('../objects/TileNode');
 const TileStore = require('../objects/TileStore');
-const Constants = require('../util/Constants.json');
+const Constants = require('../../data/Constants.json');
 
 var stage = new PIXI.Stage("0x000000");
 var renderer = PIXI.autoDetectRenderer(Constants.mapWidth, Constants.mapHeight);

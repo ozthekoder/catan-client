@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const Entity = require('./Entity');
-const Constants = require('../util/Constants.json');
+const Constants = require('../../data/Constants.json');
 
 class TileNode extends Entity {
 

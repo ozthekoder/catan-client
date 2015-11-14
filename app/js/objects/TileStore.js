@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const Store = require('./Store');
 const TileNode = require('./TileNode');
-const Constants = require('../util/Constants.json');
+const Constants = require('../../data/Constants.json');
 const PIXI = require('pixi.js');
 class TileStore extends Store {
 

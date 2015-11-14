@@ -1,0 +1,114 @@
+{
+  "types": {
+    "clay": 3,
+    "desert": 1,
+    "ore": 3,
+    "sheep": 4,
+    "water": 62,
+    "wheat": 4,
+    "wood": 4
+  },
+  "textures": {
+    "clay": {
+      "url": "data/images/clayHex.png"
+    },
+    "desert": {
+      "url": "data/images/desertHex.png"
+    },
+    "ore": {
+      "url": "data/images/oreHex.png"
+    },
+    "sheep": {
+      "url": "data/images/sheepHex.png"
+    },
+    "water": {
+      "url": "data/images/waterHex.png"
+    },
+    "wheat": {
+      "url": "data/images/wheatHex.png"
+    },
+    "wood": {
+      "url": "data/images/woodHex.png"
+    },
+    "triangle": {
+      "url": "data/images/triangle.png"
+    },
+    "thief": {
+      "url": "data/images/thief.png"
+    },
+    "circle_2": {
+      "url": "data/images/tile_two.png"
+    },
+    "circle_3": {
+      "url": "data/images/tile_three.png"
+    },
+    "circle_4": {
+      "url": "data/images/tile_four.png"
+    },
+    "circle_5": {
+      "url": "data/images/tile_five.png"
+    },
+    "circle_6": {
+      "url": "data/images/tile_six.png"
+    },
+    "circle_8": {
+      "url": "data/images/tile_eight.png"
+    },
+    "circle_9": {
+      "url": "data/images/tile_nine.png"
+    },
+    "circle_10": {
+      "url": "data/images/tile_ten.png"
+    },
+    "circle_11": {
+      "url": "data/images/tile_eleven.png"
+    },
+    "circle_12": {
+      "url": "data/images/tile_twelve.png"
+    }
+  },
+  "mapTemplate": [
+    ["water", "water", "water", "water", "water", "water", "water"],
+
+    ["water", "water",       "clay", "wood", "ore",            "water", "water"],
+    ["water",           "wood", "sheep", "wheat", "sheep",               "water", "water"],
+    ["water",       "clay", "ore", "desert", "wood", "wheat",           "water"],
+    ["water",           "wood", "wheat", "sheep", "ore",             "water", "water"],
+    ["water", "water",      "sheep", "clay", "wheat",                 "water", "water"],
+
+    ["water", "water", "water", "water", "water", "water", "water"]
+  ],
+  "mapWidth": 655,
+  "mapHeight": 625,
+  "number_location_mappings": {
+    "1": {
+      "2": "circle_5",
+      "3": "circle_2",
+      "4": "circle_6"
+    },
+    "2": {
+      "1": "circle_10",
+      "2": "circle_9",
+      "3": "circle_4",
+      "4": "circle_3"
+    },
+    "3": {
+      "1": "circle_8",
+      "2": "circle_5",
+      "4": "circle_5",
+      "5": "circle_8"
+    },
+    "4": {
+      "1": "circle_4",
+      "2": "circle_11",
+      "3": "circle_6",
+      "4": "circle_10"
+    },
+    "5": {
+      "2": "circle_11",
+      "3": "circle_12",
+      "4": "circle_9"
+    }
+  }
+
+}

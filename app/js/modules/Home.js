@@ -1,21 +1,29 @@
 const React = require('react');
 const $ = require('jquery');
-const Editor = require('./Editor');
 
 var Home = React.createClass({
     componentDidMount: function () {
-        socket.emit('ping', { message: 'ping!' });
-        socket.on("ping", function(payload){
-            console.log(payload);
-            console.log(socket.id);
-        });
+        console.log(this.props.sessionHandler);
+        let user = this.props.sessionHandler.getUser();
+        if(user) {
+            this.setState({
+                user: user
+            });
+        } else {
+            window.location.href = "/#/create-user";
+        }
     },
+
+    getInitialState() {
+        return {
+            user: null
+        }
+    },
+
     render: function () {
         return (
             <div className = "container page home" >
-                <form>
-                    <input type="text" placeholder="Enter User Name Here.." />
-                </form>
+
             </div>
         );
     }
