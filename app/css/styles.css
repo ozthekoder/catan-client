@@ -1425,6 +1425,34 @@ html, body, .container {
   height: 100%;
   overflow: hidden; }
 
+.page {
+  height: calc(100% - 50px);
+  position: relative;
+  top: 50px;
+  overflow: auto; }
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  height: 50px;
+  width: 100%;
+  background: #c69;
+  padding: 5px; }
+  .header ul {
+    float: right;
+    list-style: none; }
+    .header ul li {
+      float: left;
+      display: inline-block;
+      height: 40px;
+      list-style: none; }
+      .header ul li a.button {
+        font-size: 10px;
+        margin: 8px; }
+
 .rightPanel {
   position: absolute;
   top: 0;
@@ -1439,6 +1467,11 @@ html, body, .container {
   cursor: pointer;
   margin: 10px;
   display: inline-block; }
+
+.create-user table {
+  margin: 0 auto; }
+  .create-user table td {
+    padding: 10px; }
 
 .create-user form {
   width: 500px;

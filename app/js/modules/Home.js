@@ -21,11 +21,14 @@ var Home = React.createClass({
     },
 
     render: function () {
-        return (
-            <div className = "container page home" >
+        if(this.state.user) {
+            return (
+                <div className = "container page home" >
 
-            </div>
-        );
+                </div>
+            );
+
+        } else return (<div className = "container page home" ></div>);
     }
 })
 

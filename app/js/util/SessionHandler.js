@@ -11,6 +11,17 @@ class SessionHandler {
 			token: null,
 			user: null
 		}
+
+		//this.socket._emit = this.socket.emit;
+		//this.socket.emit = (event, payload)=>{
+		//	if(this.getToken()) {
+		//		payload.token = this.session.token;
+		//	}
+		//	console.log(payload);
+		//
+		//	this.socket._emit(event, payload);
+		//};
+
 		this.callbacks = {};
 
 		this.attachListeners();
@@ -49,15 +60,27 @@ class SessionHandler {
 	attachListeners() {
 		_.each(events, (event)=>{
 			this.callbacks[event] = [];
-			this.socket.on(event, (payload)=>{ _.each(this.callbacks[event], (func)=>func()) })
+			this.socket.on(event, (payload)=>{ _.each(this.callbacks[event], (func)=>func(payload)) })
 		});
 	}
 
 	login(payload) {
-		console.log(payload);
 		this.setUser(payload.user);
 		this.setToken(payload.token);
-		window.location.href = "/#/home";
+		window.location.href = "/#/";
+	}
+
+	logout() {
+		this.request("logout", { token: this.getToken() }).then((payload)=>{
+			if(payload.status) {
+				this.setUser(null);
+				this.setToken(null);
+				window.location.href = "/#/create-user";
+			} else {
+				console.log(payload.err);
+			}
+		})
+
 	}
 
 	request(request, params) {

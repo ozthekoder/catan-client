@@ -4,5 +4,6 @@
   "current-user-names",
   "current-game-names",
   "check-user-name",
-  "login"
+  "create-user",
+  "logout"
 ]

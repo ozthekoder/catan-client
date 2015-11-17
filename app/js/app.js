@@ -3,6 +3,7 @@ const Router = require('react-router');
 const Route = Router.Route;
 const RouteHandler = Router.RouteHandler;
 const Home = require('./modules/Home');
+const Header = require('./components/Header');
 const CreateUser = require('./modules/CreateUser');
 const Editor = require('./modules/Editor');
 const SessionHandler = require('./util/SessionHandler');
@@ -18,10 +19,19 @@ window.requestAnimFrame = (function(){
       };
 })();
 
-var App = React.createClass({
+let HeaderWrapper = React.createClass({
+    render() {
+        return (
+            <Header sessionHandler={sessionHandler} />
+        )
+    }
+});
+
+let App = React.createClass({
   render: function(){
     return (
       <div className="container" id="app">
+        <HeaderWrapper />
         <RouteHandler/>
       </div>
     );

@@ -6,19 +6,44 @@ var CreateUser = React.createClass({
 		return {
 			userNameValid: false,
 			labelCls: "label error",
-			labelText: "no good!"
+			labelText: "no good!",
+			gameCount: null,
+			userCount: null
 		}
 	},
 	componentDidMount: function () {
-		//let handler = this.props.sessionHandler;
-		//handler.on("login", (payload)=>{
-		//	handler.login(payload);
-		//});
+		let handler = this.props.sessionHandler;
+
+		handler.request("current-game-count").then((payload)=>{this.setState({ gameCount: payload });console.log(payload);});
+		handler.request("current-user-count").then((payload)=>{this.setState({ userCount: payload });console.log(payload);});
+		handler.on("current-user-count", (payload)=>{this.setState({ userCount: payload });console.log("broadcast yo");});
+		handler.on("current-game-count", (payload)=>{this.setState({ gameCount: payload });console.log("broadcast yo");});
+
+	},
+	renderCounts(){
+		if(this.state.gameCount || this.state.userCount) {
+			return (
+				<table>
+					<tbody>
+						<tr>
+							<td>Current number of games being played</td>
+							<td> {this.state.gameCount}</td>
+						</tr>
+						<tr>
+							<td>Current number of players</td>
+							<td> {this.state.userCount}</td>
+						</tr>
+					</tbody>
+
+				</table>
+			)
+		}
 	},
 	render: function () {
 		return (
 			<div className = "create-user container page" >
-				<form>
+				{this.renderCounts()}
+				<form onSubmit={function(e){return false;}}>
 					<input type="text" onKeyUp={this.onKeyUp} placeholder="Enter User Name Here.." />
 					<label className={this.state.labelCls}>{this.state.labelText}</label>
 				</form>
@@ -27,8 +52,8 @@ var CreateUser = React.createClass({
 	},
 	onKeyUp(e) {
 		let value = e.target.value;
-		console.log(value);
 		if(e.keyCode === 13) {
+			e.preventDefault();
 			if(this.state.userNameValid) {
 				let handler = this.props.sessionHandler;
 				handler.request("create-user", { userName: value}).then((payload)=>{
