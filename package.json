@@ -1,6 +1,6 @@
 {
   "name": "catan-client",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Settlers of Catan Client Implementation",
   "main": "gulpfile.js",
   "scripts": {
