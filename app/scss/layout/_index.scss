@@ -19,23 +19,10 @@ html, body, .container {
   margin: 0 auto;
   height: 50px;
   width: 100%;
-  background: $color-primary;
   padding: 5px;
 
-  ul {
-    float: right;
-    list-style: none;
-    li {
-      float: left;
-      display: inline-block;
-      height: 40px;
-      list-style: none;
-
-      a.button {
-        font-size: 10px;
-        margin: 8px;
-      }
-    }
+  .burger, .show {
+    display: none;
   }
 }
 
@@ -85,5 +72,33 @@ html, body, .container {
     > * {
       float:left;
     }
+  }
+}
+
+.home {
+  table {
+    margin: 50px auto;
+
+    tr {
+      td {
+        &:nth-child(0) {
+          text-align: left;
+        }
+
+        &:nth-child(1) {
+          text-align: center;
+        }
+
+        &:nth-child(2) {
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .burger, .show {
+    display: block !important;
   }
 }

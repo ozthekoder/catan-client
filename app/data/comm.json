@@ -2,7 +2,7 @@
   "current-game-count",
   "current-user-count",
   "current-user-names",
-  "current-game-names",
+  "current-games-info",
   "check-user-name",
   "create-user",
   "logout"

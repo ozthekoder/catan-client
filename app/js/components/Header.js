@@ -25,15 +25,10 @@ var Header = React.createClass({
 	renderMenu: function() {
 		if(this.state.user) {
 			return (
-				<ul>
-					<li>
-						<a href="#/" className="button">Games</a>
-					</li>
-					<li>
-						<a onClick={this.logout} className="button primary">{this.state.user.userName} (Logout)</a>
-					</li>
-				</ul>
-
+			<div className="menu">
+				<a href="#/" className="pseudo button">Games</a>
+				<a onClick={this.logout} className="button">{this.state.user.userName} (Logout)</a>
+			</div>
 			)
 		} else {
 			return null;
@@ -47,9 +42,12 @@ var Header = React.createClass({
 
 	render: function () {
 		return (
-			<div className = "header" >
+			<nav className="header">
+				<a href="#" className="brand">Catan For All</a>
+				<input id="header" type="checkbox" className="show" />
+				<label htmlFor="header" className="burger pseudo button">&#9776;</label>
 				{this.renderMenu()}
-			</div>
+			</nav>
 		);
 	}
 })

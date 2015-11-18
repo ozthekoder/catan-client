@@ -1439,19 +1439,9 @@ html, body, .container {
   margin: 0 auto;
   height: 50px;
   width: 100%;
-  background: #c69;
   padding: 5px; }
-  .header ul {
-    float: right;
-    list-style: none; }
-    .header ul li {
-      float: left;
-      display: inline-block;
-      height: 40px;
-      list-style: none; }
-      .header ul li a.button {
-        font-size: 10px;
-        margin: 8px; }
+  .header .burger, .header .show {
+    display: none; }
 
 .rightPanel {
   position: absolute;
@@ -1489,6 +1479,19 @@ html, body, .container {
     margin: 10px 2px; }
   .create-user form > * {
     float: left; }
+
+.home table {
+  margin: 50px auto; }
+  .home table tr td:nth-child(0) {
+    text-align: left; }
+  .home table tr td:nth-child(1) {
+    text-align: center; }
+  .home table tr td:nth-child(2) {
+    text-align: center; }
+
+@media screen and (max-width: 960px) {
+  .burger, .show {
+    display: block !important; } }
 
 @font-face {
   font-family: "DarbySans-Light";
